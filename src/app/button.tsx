@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useTransition } from "react";
 
 interface ButtonProps {
     className?: string;
@@ -10,14 +10,17 @@ interface ButtonProps {
 
 const Button: FunctionComponent<ButtonProps> = ({ className }) => {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
 
     return (
         <button
             className={
                 "bg-neon-green p-5 rounded-full hover:shadow-xl hover:shadow-neon-green " +
-                className
+                className +
+                (isPending ? " opacity-70 cursor-not-allowed" : "")
             }
-            onClick={() => router.refresh()}
+            disabled={isPending}
+            onClick={() => startTransition(() => router.refresh())}
         >
             <Image src={"/icon-dice.svg"} alt="dice" width={24} height={24} />
         </button>
